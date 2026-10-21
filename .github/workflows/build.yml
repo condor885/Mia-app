@@ -10,15 +10,18 @@ jobs:
       - uses: actions/checkout@v4
       
       - name: Scarica progetto
-        run: curl -L https://files.catbox.moe/t7yez1.zip -o project.zip
+        run: |
+          curl -L https://tmpfiles.org/dl/wpAzMZwTnqJI/v3sp3r-main.zip -o project.zip
+          ls -lh project.zip
+          file project.zip
 
       - name: Estrai progetto
         run: |
           unzip -q project.zip
           rm project.zip
           if [ -d "V3SP3R-main" ]; then
-            cp -r V3SP3R-main/* . 2>/dev/null || true
-            cp -r V3SP3R-main/.[^.]* . 2>/dev/null || true
+            shopt -s dotglob
+            mv V3SP3R-main/* . || true
             rm -rf V3SP3R-main
           fi
           ls -la
