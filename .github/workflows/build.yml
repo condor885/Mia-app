@@ -9,15 +9,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Scarica il tuo progetto
+      - name: Scarica progetto
         run: curl -L https://files.catbox.moe/t7yez1.zip -o project.zip
 
       - name: Estrai progetto
         run: |
           unzip -q project.zip
           rm project.zip
-          mv V3SP3R-main/* . 2>/dev/null || true
-          mv V3SP3R-main/.* . 2>/dev/null || true
+          if [ -d "V3SP3R-main" ]; then
+            cp -r V3SP3R-main/* . 2>/dev/null || true
+            cp -r V3SP3R-main/.[^.]* . 2>/dev/null || true
+            rm -rf V3SP3R-main
+          fi
           ls -la
 
       - name: Setup Java 17
@@ -28,11 +31,11 @@ jobs:
 
       - name: Crea APK
         run: |
-          chmod +x gradlew || true
+          chmod +x gradlew
           ./gradlew assembleDebug
 
       - name: Carica APK
         uses: actions/upload-artifact@v4
         with:
           name: Mia-App-APK
-          path: '**/build/outputs/apk/debug/*.apk'
+          path: app/build/outputs/apk/debug/*.apk
